@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#134e5e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="UPMIP Lalitpur">
+  <title>UPMIP Lalitpur - उद्यान एवं खाद्य प्रसंस्करण विभाग</title>
+
+  <!-- ब्राउज़र टैब और मोबाइल होम स्क्रीन के लिए उत्तर प्रदेश सरकार का राजचिह्न आइकन -->
+  <link id="appFavicon" rel="icon" type="image/svg+xml" href="">
+  <link id="appleTouchIcon" rel="apple-touch-icon" href="">
+  <link id="pwaManifest" rel="manifest" href="">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #0f2027;
+      font-family: Arial, sans-serif;
+    }
+    /* पेज लोड होते समय दिखने वाली सुंदर लोडिंग स्क्रीन */
+    #splashScreen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #134e5e 0%, #1b6e1b 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.4s ease;
+    }
+    .loader-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fde047;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-top: 18px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    /* मुख्य फुल-स्क्रीन पोर्टल फ्रेम */
+    #portalFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- लोडिंग स्प्लैश स्क्रीन (राजचिह्न के साथ) -->
+  <div id="splashScreen">
+    <svg width="88" height="88" viewBox="0 0 120 120" xmlns="http://w3.org">
+      <circle cx="60" cy="60" r="56" fill="#ffffff" stroke="#fde047" stroke-width="3"/>
+      <circle cx="60" cy="60" r="46" fill="none" stroke="#111111" stroke-width="1.5"/>
+      <path id="upArc" d="M 18,60 A 42,42 0 1,1 102,60" fill="none"/>
+      <text font-size="11.5" font-weight="bold" fill="#111111" letter-spacing="1">
+        <textPath href="#upArc" startOffset="50%" text-anchor="middle">उत्तर प्रदेश सरकार</textPath>
+      </text>
+      <path d="M 32,42 Q 60,65 88,42" fill="none" stroke="#111111" stroke-width="3"/>
+      <line x1="32" y1="42" x2="88" y2="42" stroke="#111111" stroke-width="1.2"/>
+      <line x1="60" y1="26" x2="60" y2="85" stroke="#111111" stroke-width="2.5"/>
+      <polygon points="60,22 55,31 65,31" fill="#111111"/>
+      <path d="M 42,58 C 30,68 32,85 48,92 C 44,80 45,68 52,62 Z" fill="#111111"/>
+      <path d="M 78,58 C 90,68 88,85 72,92 C 76,80 75,68 68,62 Z" fill="#111111"/>
+      <path d="M 48,88 Q 60,78 72,88" fill="none" stroke="#111111" stroke-width="2"/>
+    </svg>
+    <h2 style="margin: 14px 0 4px 0; font-size: 20px;">उद्यान एवं खाद्य प्रसंस्करण विभाग</h2>
+    <div style="font-size: 14px; color: #fef08a;">उत्तर प्रदेश • जनपद ललितपुर इकाई</div>
+    <div class="loader-spinner"></div>
+    <div style="font-size: 12.5px; margin-top: 10px; opacity: 0.9;">पोर्टल लोड हो रहा है, कृपया प्रतीक्षा करें...</div>
+  </div>
+
+  <!-- आपका Google Apps Script Web App -->
+  <iframe id="portalFrame"
+          src="https://google.com"
+          allow="camera; microphone; geolocation; clipboard-read; clipboard-write"
+          onload="hideSplash()">
+  </iframe>
+
+  <script>
+    // 1. फ्रेम लोड होते ही लोडिंग स्क्रीन हटाएं
+    function hideSplash() {
+      var splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(function() {
+          splash.style.display = 'none';
+        }, 400);
+      }
+    }
+    // सुरक्षा के लिए अधिकतम 4 सेकंड बाद लोडिंग स्क्रीन अपने आप हटा दें
+    setTimeout(hideSplash, 4000);
+
+    // 2. मोबाइल ऐप आइकन (PNG/SVG) और PWA Manifest को डायनामिक रूप से तैयार करना
+    (function setupMobileAppIconAndManifest() {
+      var svgLogo = '<svg xmlns="http://w3.org" width="512" height="512" viewBox="0 0 120 120">' +
+        '<rect width="120" height="120" rx="24" fill="#134e5e"/>' +
+        '<circle cx="60" cy="60" r="50" fill="#ffffff" stroke="#fde047" stroke-width="3"/>' +
+        '<circle cx="60" cy="60" r="41" fill="none" stroke="#111111" stroke-width="1.5"/>' +
+        '<path d="M 32,42 Q 60,65 88,42" fill="none" stroke="#111111" stroke-width="3.2"/>' +
+        '<line x1="32" y1="42" x2="88" y2="42" stroke="#111111" stroke-width="1.3"/>' +
+        '<line x1="60" y1="24" x2="60" y2="86" stroke="#111111" stroke-width="2.8"/>' +
+        '<polygon points="60,20 54,30 66,30" fill="#111111"/>' +
+        '<path d="M 42,58 C 30,68 32,85 48,92 C 44,80 45,68 52,62 Z" fill="#111111"/>' +
+        '<path d="M 78,58 C 90,68 88,85 72,92 C 76,80 75,68 68,62 Z" fill="#111111"/>' +
+        '<path d="M 48,88 Q 60,78 72,88" fill="none" stroke="#111111" stroke-width="2.2"/>' +
+      '</svg>';
+
+      var svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgLogo);
+      document.getElementById('appFavicon').href = svgDataUrl;
+
+      // Canvas की मदद से मोबाइल के लिए 512x512 PNG आइकन बनाएं
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, 512, 512);
+        var pngIconUrl = canvas.toDataURL('image/png');
+        document.getElementById('appleTouchIcon').href = pngIconUrl;
+
+        // PWA App Manifest बनाएं ताकि फोन पर "Install App" का विकल्प आए
+        var manifestObj = {
+          "name": "UPMIP Lalitpur - उद्यान विभाग",
+          "short_name": "UPMIP Lalitpur",
+          "description": "उद्यान एवं खाद्य प्रसंस्करण विभाग जनपद ललितपुर सहायक पोर्टल",
+          "start_url": window.location.href,
+          "display": "standalone",
+          "background_color": "#134e5e",
+          "theme_color": "#134e5e",
+          "orientation": "any",
+          "icons": [
+            {
+              "src": pngIconUrl,
+              "sizes": "512x512",
+              "type": "image/png",
+              "purpose": "any maskable"
+            }
+          ]
+        };
+        var manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        document.getElementById('pwaManifest').href = URL.createObjectURL(manifestBlob);
+      };
+      img.src = svgDataUrl;
+    })();
+  </script>
+</body>
+</html>
